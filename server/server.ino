@@ -1,65 +1,35 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
 
 #define SSID "bld2-guest"
 #define PASSWORD "MatsumotoWay"
 #define WIFI_MAX_TRY 30
 
-#define ServerIP "10.10.2.76"
-#define ServerPort 80
-
-#define LED 13
+#define LED 15
 
 //--- utility
 #define Log(x) Serial.print(x);
 #define Logln(x) Serial.println(x);
 
-extern "C" {
-#include "user_interface.h"
-}
-
-int prev_z = 0;
-
-bool isPattin(){
-  int z = system_adc_read();
-  int d_z = z - prev_z;
-  prev_z = z;
-  Serial.print(z);
-  Serial.print(",");
-  Serial.print(d_z);
-  Serial.println(",");
-  if (d_z < -150 || 150 < d_z ){
-    return true;
-  }
-  return false;
-}
+ESP8266WebServer server(80);
 
 void setup() {
   pinMode(LED,OUTPUT);
   Serial.begin(115200);
+  Serial.println("setup");
   if(WiFiSetup(SSID,PASSWORD) == false){
     Serial.println("owari");
   }
+  Serial.println("wifi begin");
+  delay(200);
+  digitalWrite(LED,LOW);
+
+  serverSetUp();
 }
 
 void loop() {
-  if(isPattin()){
-    WiFiClient client;
-    if(!client.connect(ServerIP,ServerPort)){
-      Serial.println("connection failed");
-      return;
-    }
-
-    String url = "/";
-    Serial.print("Requesting URL: ");
-    Serial.println(url);
-
-    //HTTP通信をする
-    //client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
-    client.print(String("GET ") + url + " HTTP/1.1\r\n");
-    client.stop();
-    Serial.print("send!");
-  }
-  delay(50);
+  server.handleClient();
 }
 
 boolean WiFiSetup(char* ssid,char* password){
@@ -89,6 +59,18 @@ boolean WiFiSetup(char* ssid,char* password){
   light(1000);
 
   return true;
+}
+
+void handleRoot() {
+  server.send(200, "text/plain", "hello from esp8266!");
+  Serial.println("received");
+  light(1000);
+}
+
+void serverSetUp(){
+  server.on("/", handleRoot);
+  server.begin();
+  Serial.println("Server Started");
 }
 
 void light(int time){
