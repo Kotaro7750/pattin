@@ -1,13 +1,14 @@
 #include <ESP8266WiFi.h>
 
-#define SSID "bld2-guest"
-#define PASSWORD "MatsumotoWay"
+#define SSID "Xperia XZ_9772"
+#define PASSWORD "bdmbdmbdm"
 #define WIFI_MAX_TRY 30
 
-#define ServerIP "10.10.2.76"
-#define ServerPort 80
+#define ServerIP "192.168.43.194"
+#define ServerPort 3000
 
-#define LED 13
+#define LED 15
+#define TH 120
 
 //--- utility
 #define Log(x) Serial.print(x);
@@ -27,7 +28,7 @@ bool isPattin(){
   Serial.print(",");
   Serial.print(d_z);
   Serial.println(",");
-  if (d_z < -150 || 150 < d_z ){
+  if (d_z < -TH || TH < d_z ){
     return true;
   }
   return false;
@@ -37,8 +38,12 @@ void setup() {
   pinMode(LED,OUTPUT);
   Serial.begin(115200);
   if(WiFiSetup(SSID,PASSWORD) == false){
+    light(100);
+    delay(100);
+    light(100);
     Serial.println("owari");
   }
+  light(1000);
 }
 
 void loop() {
@@ -58,6 +63,7 @@ void loop() {
     client.print(String("GET ") + url + " HTTP/1.1\r\n");
     client.stop();
     Serial.print("send!");
+    light(100);
   }
   delay(50);
 }

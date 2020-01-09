@@ -1,9 +1,11 @@
+//#include <ESPmDNS.h>
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
 
-#define SSID "bld2-guest"
-#define PASSWORD "MatsumotoWay"
+#define SSID "Xperia XZ_9772"
+#define PASSWORD "bdmbdmbdm"
 #define WIFI_MAX_TRY 30
 
 #define LED 15
