@@ -4,8 +4,8 @@
 #define PASSWORD "bdmbdmbdm"
 #define WIFI_MAX_TRY 30
 
-#define ServerIP "192.168.43.194"
-#define ServerPort 3000
+#define ServerIP "192.168.43.234"
+#define ServerPort 80
 
 #define LED 15
 #define TH 120
@@ -60,7 +60,7 @@ void loop() {
 
     //HTTP通信をする
     //client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
-    client.print(String("GET ") + url + " HTTP/1.1\r\n");
+    client.print(String("GET ") + url + " HTTP/1.1\r\n\r\n");
     client.stop();
     Serial.print("send!");
     light(100);
